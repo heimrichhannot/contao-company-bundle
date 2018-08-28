@@ -80,8 +80,8 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         'addLogo'           => 'logo',
         'addMemberContacts' => 'memberContacts',
         'addUserContacts'   => 'userContacts',
-        'addMemberEditors' => 'memberEditors',
-        'addUserEditors'   => 'userEditors',
+        'addMemberEditors'  => 'memberEditors',
+        'addUserEditors'    => 'userEditors',
         'published'         => 'start,stop'
     ],
     'fields'      => [
@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
             'sql'       => "binary(16) NULL"
         ],
-        'addMemberEditors' => [
+        'addMemberEditors'  => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addMemberEditors'],
             'exclude'   => true,
             'filter'    => true,
@@ -145,7 +145,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50', 'mandatory' => true],
             'sql'              => "blob NULL"
         ],
-        'addUserEditors' => [
+        'addUserEditors'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addUserEditors'],
             'exclude'   => true,
             'filter'    => true,
@@ -338,3 +338,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         ]
     ]
 ];
+
+System::getContainer()->get('huh.utils.dca')->addAliasToDca('tl_company', function($value, \Contao\DataContainer $dc) {
+    return System::getContainer()->get('huh.utils.dca')->generateAlias($value, $dc->id, 'tl_company', $dc->activeRecord->title);
+}, 'title');
