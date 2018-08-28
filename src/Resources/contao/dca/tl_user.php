@@ -8,8 +8,8 @@ $dca = &$GLOBALS['TL_DCA']['tl_user'];
 $dca['palettes']['extend'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', $dca['palettes']['extend']);
 $dca['palettes']['custom'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', $dca['palettes']['custom']);
 
-foreach (array_keys($arrDca['palettes']) as $strPalette) {
-    $dca['palettes'][$strPalette] = str_replace('email', 'email,userCompanies', $arrDca['palettes'][$strPalette]);
+foreach (array_keys($dca['palettes']) as $strPalette) {
+    $dca['palettes'][$strPalette] = str_replace('email', 'email,userCompanies', $dca['palettes'][$strPalette]);
 }
 
 /**
