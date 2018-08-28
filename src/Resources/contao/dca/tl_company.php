@@ -7,6 +7,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         'enableVersioning'  => true,
         'onload_callback'   => [
             ['huh.company.listener.company_callback', 'checkPermission'],
+            ['huh.company.listener.company_callback', 'initPalette'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -72,11 +73,16 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         ]
     ],
     'palettes'    => [
-        '__selector__' => ['addLogo', 'addContacts', 'addMemberContacts', 'published'],
-        'default'      => '{general_legend},title,addLogo;{address_legend},street,street2,postal,city,state,country,coordinates;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addUserContacts,addMemberContacts;{editor_legend},userEditors,memberEditors;{publish_legend},published;'
+        '__selector__' => ['addLogo', 'addMemberContacts', 'addUserContacts', 'addMemberEditors', 'addUserEditors', 'published'],
+        'default'      => '{general_legend},title,addLogo;{address_legend},street,street2,postal,city,state,country,coordinates;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addMemberContacts,addUserContacts;{editor_legend},addUserEditors,addMemberEditors;{publish_legend},published;'
     ],
     'subpalettes' => [
-        'published' => 'start,stop'
+        'addLogo'           => 'logo',
+        'addMemberContacts' => 'memberContacts',
+        'addUserContacts'   => 'userContacts',
+        'addMemberEditors' => 'memberEditors',
+        'addUserEditors'   => 'userEditors',
+        'published'         => 'start,stop'
     ],
     'fields'      => [
         'id'                => [
@@ -120,6 +126,14 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
             'sql'       => "binary(16) NULL"
         ],
+        'addMemberEditors' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_company']['addMemberEditors'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
         'memberEditors'     => [
             'label'            => &$GLOBALS['TL_LANG']['tl_company']['memberEditors'],
             'inputType'        => 'select',
@@ -128,8 +142,16 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                     'dataContainer' => 'tl_member'
                 ]);
             },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50'],
+            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50', 'mandatory' => true],
             'sql'              => "blob NULL"
+        ],
+        'addUserEditors' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_company']['addUserEditors'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
         ],
         'userEditors'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_company']['userEditors'],
@@ -140,16 +162,8 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                     'labelPattern'  => '%name% (ID %id%)'
                 ]);
             },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
+            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50 clr', 'mandatory' => true],
             'sql'              => "blob NULL"
-        ],
-        'addContacts'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_company']['addContacts'],
-            'exclude'   => true,
-            'filter'    => true,
-            'inputType' => 'checkbox',
-            'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
-            'sql'       => "char(1) NOT NULL default ''"
         ],
         'addMemberContacts' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addMemberContacts'],
@@ -228,7 +242,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'filter'    => true,
             'sorting'   => true,
             'inputType' => 'text',
-            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50', 'chosen' => true],
             'sql'       => "varchar(255) NOT NULL default ''"
         ],
         'country'           => [
@@ -247,8 +261,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'inputType'     => 'text',
             'save_callback' => [
                 function ($value, \Contao\DataContainer $dc) {
-                    if ($value)
-                    {
+                    if ($value) {
                         return $value;
                     }
 
@@ -259,8 +272,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                         'country' => $dc->activeRecord->country ? $GLOBALS['TL_LANG']['COUNTRIES'][$dc->activeRecord->country] : '',
                     ]);
 
-                    if (isset($coordinates['lat']) && isset($coordinates['lng']))
-                    {
+                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
                         return $coordinates['lat'] . ',' . $coordinates['lng'];
                     }
 
