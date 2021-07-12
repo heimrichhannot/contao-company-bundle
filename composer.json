@@ -6,7 +6,6 @@
   "require": {
     "php": "^7.1",
     "contao/core-bundle": "^4.4",
-    "symfony/framework-bundle": "^3.4",
     "heimrichhannot/contao-utils-bundle": "^2.0"
   },
   "require-dev": {
@@ -34,11 +33,6 @@
       "src/Resources/contao/languages/",
       "src/Resources/contao/templates/"
     ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "HeimrichHannot\\CompanyBundle\\Test\\": "tests/"
-    }
   },
   "config": {
     "preferred-install": "dist"

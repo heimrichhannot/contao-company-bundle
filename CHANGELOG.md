@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2021-07-12
+
+- added license file
+- removed symfony 3 dependency for contao 4.9+
+
 ## [1.0.1] - 2018-12-11
 
 ### Added
