@@ -10,6 +10,7 @@ namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\Controller;
 use Contao\System;
+use Contao\Versions;
 
 class CompanyContainer
 {
@@ -147,85 +148,35 @@ class CompanyContainer
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.Controller::addToUrl($href).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
+        return '<a href="'.Controller::addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ';
     }
 
-    public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
+    public function toggleVisibility($intId, $blnVisible)
     {
-        $user = \Contao\BackendUser::getInstance();
-        $database = \Contao\Database::getInstance();
+        $objUser = \BackendUser::getInstance();
+        $objDatabase = \Database::getInstance();
 
-        // Set the ID and action
-        \Contao\Input::setGet('id', $intId);
-        \Contao\Input::setGet('act', 'toggle');
-
-        if ($dc) {
-            $dc->id = $intId; // see #8043
+        // Check permissions to publish
+        if (!$objUser->isAdmin && !$objUser->hasAccess('tl_company::published', 'alexf')) {
+            Controller::log('Not enough permissions to publish/unpublish item ID "'.$intId.'"', 'tl_company toggleVisibility', TL_ERROR);
+            Controller::redirect('contao/main.php?act=error');
         }
 
-        // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_company']['config']['onload_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_company']['config']['onload_callback'] as $callback) {
-                if (is_array($callback)) {
-                    System::importStatic($callback[0])->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
-
-        // Check the field access
-        if (!$user->hasAccess('tl_company::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish company item ID '.$intId.'.');
-        }
-
-        // Set the current record
-        if ($dc) {
-            $objRow = $database->prepare('SELECT * FROM tl_company WHERE id=?')
-                ->limit(1)
-                ->execute($intId);
-
-            if ($objRow->numRows) {
-                $dc->activeRecord = $objRow;
-            }
-        }
-
-        $objVersions = new \Versions('tl_company', $intId);
+        $objVersions = new Versions('tl_company', $intId);
         $objVersions->initialize();
 
         // Trigger the save_callback
         if (is_array($GLOBALS['TL_DCA']['tl_company']['fields']['published']['save_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_company']['fields']['published']['save_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $blnVisible = System::importStatic($callback[0])->{$callback[1]}($blnVisible, $dc);
-                } elseif (is_callable($callback)) {
-                    $blnVisible = $callback($blnVisible, $dc);
-                }
+                $blnVisible = System::importStatic($callback[0])->{$callback[1]}($blnVisible, $this);
             }
         }
-
-        $time = time();
 
         // Update the database
-        $database->prepare("UPDATE tl_company SET tstamp=$time, published='".($blnVisible ? '1' : "''")."' WHERE id=?")
-            ->execute($intId);
-
-        if ($dc) {
-            $dc->activeRecord->tstamp = $time;
-            $dc->activeRecord->published = ($blnVisible ? '1' : '');
-        }
-
-        // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_company']['config']['onsubmit_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_company']['config']['onsubmit_callback'] as $callback) {
-                if (is_array($callback)) {
-                    System::importStatic($callback[0])->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
+        $objDatabase->prepare('UPDATE tl_company SET tstamp='.time().", published='".($blnVisible ? 1 : '')."' WHERE id=?")->execute($intId);
 
         $objVersions->create();
+        Controller::log('A new version of record "tl_company.id='.$intId.'" has been created',
+            'tl_company toggleVisibility()', TL_GENERAL);
     }
 }
