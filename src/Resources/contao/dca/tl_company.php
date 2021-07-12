@@ -6,8 +6,8 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         'ptable'            => 'tl_company_archive',
         'enableVersioning'  => true,
         'onload_callback'   => [
-            ['huh.company.listener.company_callback', 'checkPermission'],
-            ['huh.company.listener.company_callback', 'initPalette'],
+            [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'checkPermission'],
+            [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'initPalette'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -32,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'fields'                => ['title'],
             'headerFields'          => ['title'],
             'panelLayout'           => 'filter;sort,search,limit',
-            'child_record_callback' => ['huh.company.listener.company_callback', 'listChildren']
+            'child_record_callback' => [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'listChildren']
         ],
         'global_operations' => [
             'all' => [
@@ -63,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                 'label'           => &$GLOBALS['TL_LANG']['tl_company']['toggle'],
                 'icon'            => 'visible.gif',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => ['huh.company.listener.company_callback', 'toggleIcon']
+                'button_callback' => [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'toggleIcon']
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['show'],

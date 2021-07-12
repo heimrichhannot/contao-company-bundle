@@ -1,9 +1,0 @@
-services:
-  huh.company.listener.company_callback:
-    class: HeimrichHannot\CompanyBundle\EventListener\CompanyCallbackListener
-    arguments:
-    - "@contao.framework"
-  huh.company.listener.company_archive_callback:
-    class: HeimrichHannot\CompanyBundle\EventListener\CompanyArchiveCallbackListener
-    arguments:
-    - "@contao.framework"

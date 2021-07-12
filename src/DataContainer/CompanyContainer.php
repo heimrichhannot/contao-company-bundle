@@ -6,24 +6,13 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\CompanyBundle\EventListener;
+namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 
-class CompanyCallbackListener
+class CompanyContainer
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    public function __construct(ContaoFrameworkInterface $framework)
-    {
-        $this->framework = $framework;
-    }
-
     public function initPalette()
     {
         $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Input::get('id'));

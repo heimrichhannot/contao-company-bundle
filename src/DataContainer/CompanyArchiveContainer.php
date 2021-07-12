@@ -1,28 +1,11 @@
 <?php
 
-/*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @license LGPL-3.0-or-later
- */
-
-namespace HeimrichHannot\CompanyBundle\EventListener;
+namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 
-class CompanyArchiveCallbackListener
+class CompanyArchiveContainer
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    public function __construct(ContaoFrameworkInterface $framework)
-    {
-        $this->framework = $framework;
-    }
-
     public function checkPermission()
     {
         $user = \Contao\BackendUser::getInstance();
