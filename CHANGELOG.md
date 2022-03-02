@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2022-03-02
+- Changed: allow php 8
+- Changed: removed unnecessary composer.json entries 
+
 ## [1.1.1] - 2021-07-12
 
 - fixed published toggle
