@@ -3,4 +3,4 @@
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['company'] = ['Firmen', ''];
+$GLOBALS['TL_LANG']['MOD']['company'] = ['Companies', ''];

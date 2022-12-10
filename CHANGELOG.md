@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2022-12-10
+- Fixed: translations
+
 ## [1.2.1] - 2022-12-10
 - Added: fixes for php8 and contao 4.13
 
