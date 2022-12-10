@@ -5,7 +5,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_user_group'];
 /**
  * Palettes
  */
-$dca['palettes']['default'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', $dca['palettes']['default']);
+$dca['palettes']['default'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', (string) $dca['palettes']['default']);
 
 /**
  * Fields

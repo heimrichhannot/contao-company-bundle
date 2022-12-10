@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2022-12-10
+- Added: fixes for php8 and contao 4.13
+
 ## [1.2.0] - 2022-03-02
 - Changed: allow php 8
 - Changed: removed unnecessary composer.json entries 

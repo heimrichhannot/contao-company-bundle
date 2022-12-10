@@ -5,7 +5,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_member'];
 /**
  * Palettes
  */
-$dca['palettes']['default'] = str_replace('{address_legend:hide}', '{address_legend:hide},memberCompanies', $dca['palettes']['default']);
+$dca['palettes']['default'] = str_replace('{address_legend:hide}', '{address_legend:hide},memberCompanies', (string) $dca['palettes']['default']);
 
 /**
  * Fields

@@ -18,6 +18,10 @@ class CompanyContainer
     {
         $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Input::get('id'));
 
+        if (!$company) {
+            return;
+        }
+
         $dca = &$GLOBALS['TL_DCA']['tl_company'];
 
         switch ($company->country) {
@@ -35,7 +39,7 @@ class CompanyContainer
     public function listChildren($arrRow)
     {
         return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.
-            \Date::parse(\Contao\Config::get('datimFormat'), trim($arrRow['dateAdded'])).']</span></div>';
+            \Date::parse(\Contao\Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])).']</span></div>';
     }
 
     public function checkPermission()
@@ -54,7 +58,7 @@ class CompanyContainer
             $root = $user->companys;
         }
 
-        $id = strlen(\Contao\Input::get('id')) ? \Contao\Input::get('id') : CURRENT_ID;
+        $id = strlen((string) \Contao\Input::get('id')) ? \Contao\Input::get('id') : CURRENT_ID;
 
         // Check current action
         switch (\Contao\Input::get('act')) {
@@ -63,7 +67,7 @@ class CompanyContainer
                 break;
 
             case 'create':
-                if (!strlen(\Contao\Input::get('pid')) || !in_array(\Contao\Input::get('pid'), $root)) {
+                if (!strlen((string) \Contao\Input::get('pid')) || !in_array(\Contao\Input::get('pid'), $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create company items in company archive ID '.\Contao\Input::get('pid').'.');
                 }
                 break;
@@ -119,7 +123,7 @@ class CompanyContainer
                 break;
 
             default:
-                if (strlen(\Contao\Input::get('act'))) {
+                if (strlen((string) \Contao\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Contao\Input::get('act').'".');
                 } elseif (!in_array($id, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access company archive ID '.$id.'.');
@@ -132,7 +136,7 @@ class CompanyContainer
     {
         $user = \Contao\BackendUser::getInstance();
 
-        if (strlen(\Contao\Input::get('tid'))) {
+        if (strlen((string) \Contao\Input::get('tid'))) {
             $this->toggleVisibility(\Contao\Input::get('tid'), ('1' === \Contao\Input::get('state')), (@func_get_arg(12) ?: null));
             Controller::redirect(System::getReferer());
         }
@@ -166,7 +170,7 @@ class CompanyContainer
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_company']['fields']['published']['save_callback'])) {
+        if (is_array($GLOBALS['TL_DCA']['tl_company']['fields']['published']['save_callback'] ?? null)) {
             foreach ($GLOBALS['TL_DCA']['tl_company']['fields']['published']['save_callback'] as $callback) {
                 $blnVisible = System::importStatic($callback[0])->{$callback[1]}($blnVisible, $this);
             }

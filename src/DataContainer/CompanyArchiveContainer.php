@@ -109,7 +109,7 @@ class CompanyArchiveContainer
                 break;
 
             default:
-                if (strlen(\Contao\Input::get('act'))) {
+                if (strlen((string) \Contao\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' company_archives.');
                 }
                 break;
@@ -118,16 +118,16 @@ class CompanyArchiveContainer
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_company_archive') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_company_archive') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
     }
 
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
     }
 }

@@ -5,11 +5,15 @@ $dca = &$GLOBALS['TL_DCA']['tl_user'];
 /**
  * Palettes
  */
-$dca['palettes']['extend'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', $dca['palettes']['extend']);
-$dca['palettes']['custom'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', $dca['palettes']['custom']);
+$dca['palettes']['extend'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', (string) $dca['palettes']['extend']);
+$dca['palettes']['custom'] = str_replace('fop;', 'fop;{company_legend},companys,companyp;', (string) $dca['palettes']['custom']);
 
 foreach (array_keys($dca['palettes']) as $strPalette) {
-    $dca['palettes'][$strPalette] = str_replace('email', 'email,userCompanies', $dca['palettes'][$strPalette]);
+    if (is_array($dca['palettes'][$strPalette])) {
+        continue;
+    }
+
+    $dca['palettes'][$strPalette] = str_replace('email', 'email,userCompanies', (string) $dca['palettes'][$strPalette]);
 }
 
 /**

@@ -16,5 +16,5 @@ $GLOBALS['TL_PERMISSIONS'][] = 'companyp';
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_company']         = 'HeimrichHannot\CompanyBundle\Model\CompanyModel';
-$GLOBALS['TL_MODELS']['tl_company_archive'] = 'HeimrichHannot\CompanyBundle\Model\CompanyArchiveModel';
+$GLOBALS['TL_MODELS']['tl_company']         = \HeimrichHannot\CompanyBundle\Model\CompanyModel::class;
+$GLOBALS['TL_MODELS']['tl_company_archive'] = \HeimrichHannot\CompanyBundle\Model\CompanyArchiveModel::class;
