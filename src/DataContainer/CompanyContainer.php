@@ -16,21 +16,28 @@ use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Input;
-use Contao\System;
+use HeimrichHannot\CompanyBundle\Model\CompanyModel;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CompanyContainer
 {
+    public function __construct(
+        private readonly RequestStack $requestStack,
+    )
+    {
+    }
+
     #[AsCallback(table: 'tl_company', target: 'config.onload')]
     public function onConfigOnloadCallback(DataContainer $dc = null): void
     {
-        $this->initPalette();
-        $this->checkPermission();
+        $model = CompanyModel::findByPk($dc->id);
+
+        $this->initPalette($model);
+        $this->checkPermission($model);
     }
 
-    public function initPalette(): void
+    public function initPalette(CompanyModel|null $company): void
     {
-        $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Contao\Input::get('id'));
-
         if (!$company) {
             return;
         }
@@ -55,10 +62,12 @@ class CompanyContainer
             Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])) . ']</span></div>';
     }
 
-    public function checkPermission(): void
+    public function checkPermission(CompanyModel|null $company): void
     {
         $user = BackendUser::getInstance();
         $database = Database::getInstance();
+
+
 
         if ($user->isAdmin) {
             return;
@@ -127,9 +136,7 @@ class CompanyContainer
                     throw new AccessDeniedException('Invalid company archive ID ' . $id . '.');
                 }
 
-                /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
-                $session = System::getContainer()->get('session');
-
+                $session = $this->requestStack->getCurrentRequest()->getSession();
                 $sessionData = $session->all();
                 $sessionData['CURRENT']['IDS'] = array_intersect($sessionData['CURRENT']['IDS'], $objArchive->fetchEach('id'));
                 $session->replace($sessionData);

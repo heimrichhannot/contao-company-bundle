@@ -41,27 +41,27 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'edit'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['edit'],
                 'href'  => 'act=edit',
-                'icon'  => 'edit.gif'
+                'icon'  => 'edit.svg'
             ],
             'copy'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['copy'],
-                'href'  => 'act=copy',
-                'icon'  => 'copy.gif'
+                'href'  => 'act=paste&amp;mode=copy',
+                'icon'  => 'copy.svg'
             ],
             'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_company']['delete'],
                 'href'       => 'act=delete',
-                'icon'       => 'delete.gif',
+                'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"'
             ],
             'toggle' => [
                 'href'            => 'act=toggle&amp;field=published',
-                'icon'            => 'visible.gif',
+                'icon'            => 'visible.svg',
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['show'],
                 'href'  => 'act=show',
-                'icon'  => 'show.gif'
+                'icon'  => 'show.svg'
             ],
         ]
     ],

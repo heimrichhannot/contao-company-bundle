@@ -5,4 +5,4 @@ services:
     autoconfigure: true
 
   HeimrichHannot\CompanyBundle\:
-    resource: "../../{DataContainer}/*"
+    resource: "../src/{DataContainer}/*"
