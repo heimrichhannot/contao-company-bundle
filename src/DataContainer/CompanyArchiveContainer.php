@@ -50,7 +50,7 @@ class CompanyArchiveContainer
                     if (is_array($arrNew['tl_company_archive']) && in_array(\Contao\Input::get('id'), $arrNew['tl_company_archive'])) {
                         // Add the permissions on group level
                         if ('custom' != $user->inherit) {
-                            $objGroup = $database->execute('SELECT id, companys, companyp FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')');
+                            $objGroup = $database->execute('SELECT id, companys, companyp FROM tl_user_group WHERE id IN(' . implode(',', array_map('intval', $user->groups)) . ')');
 
                             while ($objGroup->next()) {
                                 $arrModulep = \Contao\StringUtil::deserialize($objGroup->companyp);
@@ -92,7 +92,7 @@ class CompanyArchiveContainer
             case 'delete':
             case 'show':
                 if (!in_array(\Contao\Input::get('id'), $root) || ('delete' == \Contao\Input::get('act') && !$user->hasAccess('delete', 'companyp'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' company_archive ID '.\Contao\Input::get('id').'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Contao\Input::get('act') . ' company_archive ID ' . \Contao\Input::get('id') . '.');
                 }
                 break;
 
@@ -110,7 +110,7 @@ class CompanyArchiveContainer
 
             default:
                 if (strlen((string) \Contao\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' company_archives.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Contao\Input::get('act') . ' company_archives.');
                 }
                 break;
         }
@@ -118,16 +118,16 @@ class CompanyArchiveContainer
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_company_archive') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue().'" title="'.\Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.\Contao\Image::getHtml($icon, $label).'</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
+        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_company_archive') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue().'" title="'.\Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.\Contao\Image::getHtml($icon, $label).'</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue().'" title="'.\Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.\Contao\Image::getHtml($icon, $label).'</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)).' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 }

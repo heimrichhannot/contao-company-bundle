@@ -27,7 +27,6 @@ class CompanyContainer
         $this->checkPermission();
     }
 
-
     public function initPalette(): void
     {
         $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Contao\Input::get('id'));
@@ -52,8 +51,8 @@ class CompanyContainer
 
     public function listChildren($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.
-            Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])).']</span></div>';
+        return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' .
+            Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])) . ']</span></div>';
     }
 
     public function checkPermission(): void
@@ -82,14 +81,14 @@ class CompanyContainer
 
             case 'create':
                 if (!strlen((string) Input::get('pid')) || !in_array(Input::get('pid'), $root)) {
-                    throw new AccessDeniedException('Not enough permissions to create company items in company archive ID '. Input::get('pid').'.');
+                    throw new AccessDeniedException('Not enough permissions to create company items in company archive ID ' . Input::get('pid') . '.');
                 }
                 break;
 
             case 'cut':
             case 'copy':
                 if (!in_array(Input::get('pid'), $root)) {
-                    throw new AccessDeniedException('Not enough permissions to '. Input::get('act').' company item ID '.$id.' to company archive ID '. Input::get('pid').'.');
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' company item ID ' . $id . ' to company archive ID ' . Input::get('pid') . '.');
                 }
             // no break STATEMENT HERE
 
@@ -103,11 +102,11 @@ class CompanyContainer
                     ->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new AccessDeniedException('Invalid company item ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid company item ID ' . $id . '.');
                 }
 
                 if (!in_array($objArchive->pid, $root)) {
-                    throw new AccessDeniedException('Not enough permissions to '. Input::get('act').' company item ID '.$id.' of company archive ID '.$objArchive->pid.'.');
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' company item ID ' . $id . ' of company archive ID ' . $objArchive->pid . '.');
                 }
                 break;
 
@@ -118,14 +117,14 @@ class CompanyContainer
             case 'cutAll':
             case 'copyAll':
                 if (!in_array($id, $root)) {
-                    throw new AccessDeniedException('Not enough permissions to access company archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access company archive ID ' . $id . '.');
                 }
 
                 $objArchive = $database->prepare('SELECT id FROM tl_company WHERE pid=?')
                     ->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new AccessDeniedException('Invalid company archive ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid company archive ID ' . $id . '.');
                 }
 
                 /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
@@ -138,9 +137,9 @@ class CompanyContainer
 
             default:
                 if (strlen((string) Input::get('act'))) {
-                    throw new AccessDeniedException('Invalid command "'. Input::get('act').'".');
+                    throw new AccessDeniedException('Invalid command "' . Input::get('act') . '".');
                 } elseif (!in_array($id, $root)) {
-                    throw new AccessDeniedException('Not enough permissions to access company archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access company archive ID ' . $id . '.');
                 }
                 break;
         }

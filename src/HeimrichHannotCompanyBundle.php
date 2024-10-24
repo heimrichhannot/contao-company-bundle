@@ -16,5 +16,4 @@ class HeimrichHannotCompanyBundle extends Bundle
     {
         return \dirname(__DIR__);
     }
-
 }
