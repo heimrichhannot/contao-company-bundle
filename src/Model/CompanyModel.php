@@ -8,7 +8,9 @@
 
 namespace HeimrichHannot\CompanyBundle\Model;
 
-class CompanyModel extends \Model
+use Contao\Model;
+
+class CompanyModel extends Model
 {
     protected static $strTable = 'tl_company';
 }

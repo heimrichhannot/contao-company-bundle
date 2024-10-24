@@ -1,20 +1,15 @@
 <?php
 
+use HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
+
+DateAddedField::register('tl_company');
+
 $GLOBALS['TL_DCA']['tl_company'] = [
     'config'      => [
         'dataContainer'     => 'Table',
         'ptable'            => 'tl_company_archive',
         'enableVersioning'  => true,
-        'onload_callback'   => [
-            [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'checkPermission'],
-            [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'initPalette'],
-        ],
-        'onsubmit_callback' => [
-            ['huh.utils.dca', 'setDateAdded'],
-        ],
-        'oncopy_callback'   => [
-            ['huh.utils.dca', 'setDateAddedOnCopy'],
-        ],
         'sql'               => [
             'keys' => [
                 'id'                       => 'primary',
@@ -32,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'fields'                => ['title'],
             'headerFields'          => ['title'],
             'panelLayout'           => 'filter;sort,search,limit',
-            'child_record_callback' => [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'listChildren']
+            'child_record_callback' => [CompanyContainer::class, 'listChildren']
         ],
         'global_operations' => [
             'all' => [
@@ -46,29 +41,27 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'edit'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['edit'],
                 'href'  => 'act=edit',
-                'icon'  => 'edit.gif'
+                'icon'  => 'edit.svg'
             ],
             'copy'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['copy'],
-                'href'  => 'act=copy',
-                'icon'  => 'copy.gif'
+                'href'  => 'act=paste&amp;mode=copy',
+                'icon'  => 'copy.svg'
             ],
             'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_company']['delete'],
                 'href'       => 'act=delete',
-                'icon'       => 'delete.gif',
+                'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"'
             ],
             'toggle' => [
-                'label'           => &$GLOBALS['TL_LANG']['tl_company']['toggle'],
-                'icon'            => 'visible.gif',
-                'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => [\HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer::class, 'toggleIcon']
+                'href'            => 'act=toggle&amp;field=published',
+                'icon'            => 'visible.svg',
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_company']['show'],
                 'href'  => 'act=show',
-                'icon'  => 'show.gif'
+                'icon'  => 'show.svg'
             ],
         ]
     ],
@@ -97,13 +90,6 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_company']['tstamp'],
             'sql'   => "int(10) unsigned NOT NULL default '0'"
         ],
-        'dateAdded'         => [
-            'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag'    => 6,
-            'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
-            'sql'     => "int(10) unsigned NOT NULL default '0'"
-        ],
         'title'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['title'],
             'exclude'   => true,
@@ -127,7 +113,6 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "binary(16) NULL"
         ],
         'addMemberEditors'  => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_company']['addMemberEditors'],
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'checkbox',
@@ -135,18 +120,22 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'memberEditors'     => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_company']['memberEditors'],
-            'inputType'        => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
-                return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-                    'dataContainer' => 'tl_member'
-                ]);
-            },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'              => "blob NULL"
+            'inputType'        => 'picker',
+            'eval' => [
+                'multiple' => true,
+                'mandatory' => true,
+            ],
+            'relation' => [
+                'type' => 'hasMany',
+                'load' => 'lazy',
+                'table' => 'tl_member',
+            ],
+            'sql' => [
+                'type' => 'blob',
+                'notnull' => false,
+            ],
         ],
         'addUserEditors'    => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_company']['addUserEditors'],
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'checkbox',
@@ -154,16 +143,20 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'userEditors'       => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_company']['userEditors'],
-            'inputType'        => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
-                return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-                    'dataContainer' => 'tl_user',
-                    'labelPattern'  => '%name% (ID %id%)'
-                ]);
-            },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50 clr', 'mandatory' => true],
-            'sql'              => "blob NULL"
+            'inputType'        => 'picker',
+            'eval' => [
+                'multiple' => true,
+                'mandatory' => true,
+            ],
+            'relation' => [
+                'type' => 'hasMany',
+                'load' => 'lazy',
+                'table' => 'tl_user',
+            ],
+            'sql' => [
+                'type' => 'blob',
+                'notnull' => false,
+            ],
         ],
         'addMemberContacts' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addMemberContacts'],
@@ -174,15 +167,20 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'memberContacts'    => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_company']['memberContacts'],
-            'inputType'        => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
-                return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-                    'dataContainer' => 'tl_member',
-                ]);
-            },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'              => "blob NULL"
+            'inputType'        => 'picker',
+            'eval' => [
+                'multiple' => true,
+                'mandatory' => true,
+            ],
+            'relation' => [
+                'type' => 'hasMany',
+                'load' => 'lazy',
+                'table' => 'tl_member',
+            ],
+            'sql' => [
+                'type' => 'blob',
+                'notnull' => false,
+            ],
         ],
         'addUserContacts'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addUserContacts'],
@@ -193,16 +191,20 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'userContacts'      => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_company']['userContacts'],
-            'inputType'        => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
-                return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-                    'dataContainer' => 'tl_user',
-                    'labelPattern'  => '%name% (ID %id%)'
-                ]);
-            },
-            'eval'             => ['multiple' => true, 'chosen' => true, 'tl_class' => 'w50 clr', 'mandatory' => true],
-            'sql'              => "blob NULL"
+            'inputType'        => 'picker',
+            'eval' => [
+                'multiple' => true,
+                'mandatory' => true,
+            ],
+            'relation' => [
+                'type' => 'hasMany',
+                'load' => 'lazy',
+                'table' => 'tl_user',
+            ],
+            'sql' => [
+                'type' => 'blob',
+                'notnull' => false,
+            ],
         ],
         'street'            => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['street'],
@@ -315,8 +317,8 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "varchar(255) NOT NULL default ''"
         ],
         'published'         => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_company']['published'],
             'exclude'   => true,
+            'toggle'    => true,
             'filter'    => true,
             'inputType' => 'checkbox',
             'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],

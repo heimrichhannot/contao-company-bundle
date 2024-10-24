@@ -18,9 +18,6 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class Plugin implements BundlePluginInterface, ConfigPluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getBundles(ParserInterface $parser)
     {
         return [
@@ -28,8 +25,8 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface
         ];
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
+    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig): void
     {
-        $loader->load('@HeimrichHannotCompanyBundle/Resources/config/services.yml');
+        $loader->load('@HeimrichHannotCompanyBundle/config/services.yaml');
     }
 }
