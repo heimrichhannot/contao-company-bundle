@@ -28,9 +28,9 @@ class CompanyContainer
     }
 
 
-    public function initPalette()
+    public function initPalette(): void
     {
-        $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Input::get('id'));
+        $company = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_company', \Contao\Input::get('id'));
 
         if (!$company) {
             return;
@@ -56,7 +56,7 @@ class CompanyContainer
             Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])).']</span></div>';
     }
 
-    public function checkPermission()
+    public function checkPermission(): void
     {
         $user = BackendUser::getInstance();
         $database = Database::getInstance();
