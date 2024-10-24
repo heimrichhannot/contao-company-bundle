@@ -23,11 +23,11 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'format' => '%s'
         ],
         'sorting'           => [
-            'mode'                  => 2,
+            'mode'                  => 4,
             'fields'                => ['title'],
             'headerFields'          => ['title'],
             'panelLayout'           => 'filter;sort,search,limit',
-            'child_record_callback' => [CompanyContainer::class, 'listChildren']
+            'disableGrouping' => true,
         ],
         'global_operations' => [
             'all' => [

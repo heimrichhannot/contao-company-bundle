@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2024-10-24
+- Fixed: dca issues in tl_company
+
 ## [1.3.0] - 2024-10-24
 - Changed: modernized bundle structure and code
 - Changed: dropped support for contao < 4.13 and php < 8.1
