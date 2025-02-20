@@ -3,6 +3,8 @@
 namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\Controller;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\System;
 
 class CompanyArchiveContainer
 {
@@ -118,7 +120,7 @@ class CompanyArchiveContainer
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_company_archive') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
+        return System::getContainer()->get('security.helper')->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_company_archive') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)

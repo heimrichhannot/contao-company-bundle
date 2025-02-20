@@ -16,6 +16,7 @@ use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Input;
+use Contao\System;
 use HeimrichHannot\CompanyBundle\Model\CompanyModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -34,6 +35,34 @@ class CompanyContainer
 
         $this->initPalette($model);
         $this->checkPermission($model);
+    }
+
+    #[AsCallback(table: 'tl_company', target: 'fields.alias.save')]
+    public function onSaveCallback($value, DataContainer $dc)
+    {
+        $aliasExists = static function (string $alias) use ($dc): bool {
+            $result = Database::getInstance()
+                ->prepare("SELECT id FROM tl_company WHERE alias=? AND id!=?")
+                ->execute($alias, $dc->id);
+
+            return $result->numRows > 0;
+        };
+
+        // Generate alias if there is none
+        if (!$value)
+        {
+            $value = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, 0, $aliasExists);
+        }
+        elseif (preg_match('/^[1-9]\d*$/', $value))
+        {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
+        }
+        elseif ($aliasExists($value))
+        {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
+        }
+
+        return $value;
     }
 
     public function initPalette(CompanyModel|null $company): void

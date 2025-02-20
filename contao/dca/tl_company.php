@@ -1,13 +1,12 @@
 <?php
 
-use HeimrichHannot\CompanyBundle\DataContainer\CompanyContainer;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 
 DateAddedField::register('tl_company');
 
 $GLOBALS['TL_DCA']['tl_company'] = [
     'config'      => [
-        'dataContainer'     => 'Table',
+        'dataContainer'     => \Contao\DC_Table::class,
         'ptable'            => 'tl_company_archive',
         'enableVersioning'  => true,
         'sql'               => [
@@ -67,7 +66,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
     ],
     'palettes'    => [
         '__selector__' => ['addLogo', 'addMemberContacts', 'addUserContacts', 'addMemberEditors', 'addUserEditors', 'published'],
-        'default'      => '{general_legend},title,addLogo;{address_legend},street,street2,postal,city,state,country,coordinates;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addMemberContacts,addUserContacts;{editor_legend},addUserEditors,addMemberEditors;{publish_legend},published;'
+        'default'      => '{general_legend},title,alias,addLogo;{address_legend},street,street2,postal,city,state,country,coordinates;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addMemberContacts,addUserContacts;{editor_legend},addUserEditors,addMemberEditors;{publish_legend},published;'
     ],
     'subpalettes' => [
         'addLogo'           => 'logo',
@@ -98,6 +97,14 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
             'sql'       => "varchar(255) NOT NULL default ''"
         ],
+        'alias' => [
+            'label' => &$GLOBALS['TL_LANG']['MSC']['alias'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => ['rgxp' => 'alias', 'unique' => true, 'maxlength' => 128, 'tl_class' => 'w50'],
+            'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''",
+        ],
         'addLogo'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['addLogo'],
             'exclude'   => true,
@@ -109,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['logo'],
             'exclude'   => true,
             'inputType' => 'fileTree',
-            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
+            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => \Contao\Config::get('validImageTypes'), 'mandatory' => true],
             'sql'       => "binary(16) NULL"
         ],
         'addMemberEditors'  => [
@@ -253,7 +260,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'filter'    => true,
             'sorting'   => true,
             'inputType' => 'select',
-            'options'   => System::getCountries(),
+            'options'   => \Contao\System::getContainer()->get('contao.intl.countries')->getCountries(),
             'eval'      => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql'       => "varchar(2) NOT NULL default ''"
         ],
@@ -267,7 +274,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                         return $value;
                     }
 
-                    $coordinates = System::getContainer()->get('huh.utils.location')->computeCoordinatesByArray([
+                    $coordinates = \Contao\System::getContainer()->get('huh.utils.location')->computeCoordinatesByArray([
                         'street'  => $dc->activeRecord->street,
                         'postal'  => $dc->activeRecord->postal,
                         'city'    => $dc->activeRecord->city,
@@ -340,7 +347,3 @@ $GLOBALS['TL_DCA']['tl_company'] = [
         ]
     ]
 ];
-
-System::getContainer()->get('huh.utils.dca')->addAliasToDca('tl_company', function($value, \Contao\DataContainer $dc) {
-    return System::getContainer()->get('huh.utils.dca')->generateAlias($value, $dc->id, 'tl_company', $dc->activeRecord->title);
-}, 'title');
