@@ -6,6 +6,7 @@
   "require": {
     "php": "^8.1",
     "contao/core-bundle": "^4.13 || ^5.5",
+    "codefog/contao-haste": "^5.2",
     "heimrichhannot/contao-utils-bundle": "^2.235|| ^3.4"
   },
   "autoload": {
