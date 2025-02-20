@@ -274,7 +274,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                         return $value;
                     }
 
-                    $coordinates = \Contao\System::getContainer()->get('huh.utils.location')->computeCoordinatesByArray([
+                    $coordinates = \Contao\System::getContainer()->get(\HeimrichHannot\CompanyBundle\Util\LocationUtil::class)->computeCoordinatesByArray([
                         'street'  => $dc->activeRecord->street,
                         'postal'  => $dc->activeRecord->postal,
                         'city'    => $dc->activeRecord->city,
