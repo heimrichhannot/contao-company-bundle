@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'sql'       => "varchar(255) NOT NULL default ''"
         ],
         'alias' => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['alias'],
+            'label' => &$GLOBALS['TL_LANG']['tl_company']['alias'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
