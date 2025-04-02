@@ -12,18 +12,21 @@ use Contao\BackendUser;
 use Contao\Config;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Intl\Countries;
+use Contao\CoreBundle\Slug\Slug;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Input;
-use Contao\System;
 use HeimrichHannot\CompanyBundle\Model\CompanyModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CompanyContainer
 {
     public function __construct(
-        private readonly RequestStack $requestStack,
+        protected RequestStack $requestStack,
+        protected Slug $slug,
+        protected Countries $countries,
     )
     {
     }
@@ -51,7 +54,7 @@ class CompanyContainer
         // Generate alias if there is none
         if (!$value)
         {
-            $value = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, 0, $aliasExists);
+            $value = $this->slug->generate($dc->activeRecord->title, 0, $aliasExists);
         }
         elseif (preg_match('/^[1-9]\d*$/', $value))
         {
@@ -63,6 +66,12 @@ class CompanyContainer
         }
 
         return $value;
+    }
+
+    #[AsCallback(table: 'tl_company', target: 'fields.country.options')]
+    public function optionsCallback(DataContainer $dc)
+    {
+        return $this->countries->getCountries();
     }
 
     public function initPalette(CompanyModel|null $company): void
