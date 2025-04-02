@@ -260,7 +260,6 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'filter'    => true,
             'sorting'   => true,
             'inputType' => 'select',
-            'options'   => \Contao\System::getContainer()->get('contao.intl.countries')->getCountries(),
             'eval'      => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql'       => "varchar(2) NOT NULL default ''"
         ],
@@ -268,26 +267,6 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'label'         => &$GLOBALS['TL_LANG']['tl_company']['coordinates'],
             'exclude'       => true,
             'inputType'     => 'text',
-            'save_callback' => [
-                function ($value, \Contao\DataContainer $dc) {
-                    if ($value) {
-                        return $value;
-                    }
-
-                    $coordinates = \Contao\System::getContainer()->get(\HeimrichHannot\CompanyBundle\Util\LocationUtil::class)->computeCoordinatesByArray([
-                        'street'  => $dc->activeRecord->street,
-                        'postal'  => $dc->activeRecord->postal,
-                        'city'    => $dc->activeRecord->city,
-                        'country' => $dc->activeRecord->country ? $GLOBALS['TL_LANG']['COUNTRIES'][$dc->activeRecord->country] : '',
-                    ]);
-
-                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
-                        return $coordinates['lat'] . ',' . $coordinates['lng'];
-                    }
-
-                    return $value;
-                }
-            ],
             'eval'          => ['maxlength' => 255, 'tl_class' => 'w50'],
             'sql'           => "varchar(255) NOT NULL default ''"
         ],
