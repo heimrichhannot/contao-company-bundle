@@ -37,7 +37,7 @@ class CompanyContainer
         $model = CompanyModel::findByPk($dc->id);
 
         $this->initPalette($model);
-        $this->checkPermission($model);
+        $this->checkPermission($dc, $model);
     }
 
     #[AsCallback(table: 'tl_company', target: 'fields.alias.save')]
@@ -100,12 +100,10 @@ class CompanyContainer
             Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])) . ']</span></div>';
     }
 
-    public function checkPermission(CompanyModel|null $company): void
+    public function checkPermission(DataContainer $dc, CompanyModel|null $company): void
     {
         $user = BackendUser::getInstance();
         $database = Database::getInstance();
-
-
 
         if ($user->isAdmin) {
             return;
@@ -118,7 +116,7 @@ class CompanyContainer
             $root = $user->companys;
         }
 
-        $id = strlen((string) Input::get('id')) ? Input::get('id') : CURRENT_ID;
+        $id = strlen((string) Input::get('id')) ? Input::get('id') : $dc->currentPid;
 
         // Check current action
         switch (Input::get('act')) {
