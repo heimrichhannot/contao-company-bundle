@@ -4,11 +4,15 @@ namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\Controller;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
-use Symfony\Bundle\SecurityBundle\Security;
+use Contao\Image;
+use Contao\StringUtil;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CompanyArchiveContainer
 {
-    public function __construct(protected Security $securityHelper)
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $auth,
+    )
     {
     }
 
@@ -59,10 +63,10 @@ class CompanyArchiveContainer
                             $objGroup = $database->execute('SELECT id, companys, companyp FROM tl_user_group WHERE id IN(' . implode(',', array_map('intval', $user->groups)) . ')');
 
                             while ($objGroup->next()) {
-                                $arrModulep = \Contao\StringUtil::deserialize($objGroup->companyp);
+                                $arrModulep = StringUtil::deserialize($objGroup->companyp);
 
                                 if (is_array($arrModulep) && in_array('create', $arrModulep)) {
-                                    $arrModules = \Contao\StringUtil::deserialize($objGroup->companys, true);
+                                    $arrModules = StringUtil::deserialize($objGroup->companys, true);
                                     $arrModules[] = \Contao\Input::get('id');
 
                                     $database->prepare('UPDATE tl_user_group SET companys=? WHERE id=?')->execute(serialize($arrModules), $objGroup->id);
@@ -76,10 +80,10 @@ class CompanyArchiveContainer
                                 ->limit(1)
                                 ->execute($user->id);
 
-                            $arrModulep = \Contao\StringUtil::deserialize($user->companyp);
+                            $arrModulep = StringUtil::deserialize($user->companyp);
 
                             if (is_array($arrModulep) && in_array('create', $arrModulep)) {
-                                $arrModules = \Contao\StringUtil::deserialize($user->companys, true);
+                                $arrModules = StringUtil::deserialize($user->companys, true);
                                 $arrModules[] = \Contao\Input::get('id');
 
                                 $database->prepare('UPDATE tl_user SET companys=? WHERE id=?')
@@ -124,16 +128,16 @@ class CompanyArchiveContainer
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->securityHelper->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_company_archive') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
+        return $this->auth->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_company_archive') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('create', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label) . '</a> ' : \Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
+        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'companyp') ? '<a href="' . Controller::addToUrl($href . '&amp;id=' . $row['id']) . '&rt=' . \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', (string) $icon)) . ' ';
     }
 }
