@@ -68,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
     ],
     'palettes' => [
         '__selector__' => ['addLogo', 'addMemberContacts', 'addUserContacts', 'addMemberEditors', 'addUserEditors', 'published'],
-        'default' => '{general_legend},title,alias,addLogo;{address_legend},street,street2,postal,city,state,country,coordinates;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addMemberContacts,addUserContacts;{editor_legend},addUserEditors,addMemberEditors;{publish_legend},published;',
+        'default' => '{general_legend},title,alias,addLogo;{address_legend},street,street2,postal,city,state,country;{contact_legend},phone,fax,email,website;{contact_person_legend},addContacts,addMemberContacts,addUserContacts;{editor_legend},addUserEditors,addMemberEditors;{publish_legend},published;',
     ],
     'subpalettes' => [
         'addLogo' => 'logo',
@@ -317,16 +317,6 @@ $GLOBALS['TL_DCA']['tl_company'] = [
                 'submitOnChange' => true,
             ],
             'sql' => "varchar(2) NOT NULL default ''",
-        ],
-        'coordinates' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_company']['coordinates'],
-            'exclude' => true,
-            'inputType' => 'text',
-            'eval' => [
-                'maxlength' => 255,
-                'tl_class' => 'w50',
-            ],
-            'sql' => "varchar(255) NOT NULL default ''",
         ],
         'phone' => [
             'label' => &$GLOBALS['TL_LANG']['tl_company']['phone'],

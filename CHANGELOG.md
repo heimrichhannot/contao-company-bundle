@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2025-04-03
+- Added: contao 5 support ([#3](https://github.com/heimrichhannot/contao-company-bundle/pull/3), [@Defcon0](https://github.com/Defcon0))
+- Added: company alias ([#3](https://github.com/heimrichhannot/contao-company-bundle/pull/3), [@Defcon0](https://github.com/Defcon0))
+- Added: CI pipeline ([#4](https://github.com/heimrichhannot/contao-company-bundle/pull/4))
+- Removed: coordinates field and calculation
+
 ## [1.3.1] - 2024-10-24
 - Fixed: dca issues in tl_company
 
