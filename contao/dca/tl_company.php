@@ -1,12 +1,14 @@
 <?php
 
+use Contao\DataContainer;
+use Contao\DC_Table;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 
 DateAddedField::register('tl_company');
 
 $GLOBALS['TL_DCA']['tl_company'] = [
     'config'      => [
-        'dataContainer'     => \Contao\DC_Table::class,
+        'dataContainer'     => DC_Table::class,
         'ptable'            => 'tl_company_archive',
         'enableVersioning'  => true,
         'sql'               => [
@@ -22,7 +24,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'format' => '%s'
         ],
         'sorting'           => [
-            'mode'                  => 4,
+            'mode'                  => DataContainer::MODE_PARENT,
             'fields'                => ['title'],
             'headerFields'          => ['title'],
             'panelLayout'           => 'filter;sort,search,limit',
@@ -116,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_company'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_company']['logo'],
             'exclude'   => true,
             'inputType' => 'fileTree',
-            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => \Contao\Config::get('validImageTypes'), 'mandatory' => true],
+            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => \true],
             'sql'       => "binary(16) NULL"
         ],
         'addMemberEditors'  => [

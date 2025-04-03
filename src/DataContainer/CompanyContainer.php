@@ -56,7 +56,7 @@ class CompanyContainer
         {
             $value = $this->slug->generate($dc->activeRecord->title, 0, $aliasExists);
         }
-        elseif (preg_match('/^[1-9]\d*$/', $value))
+        elseif (preg_match('/^[1-9]\d*$/', (string) $value))
         {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
         }
