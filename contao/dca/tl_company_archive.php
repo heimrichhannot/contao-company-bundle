@@ -1,19 +1,17 @@
 <?php
 
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
+
+DateAddedField::register('tl_company_archive');
+
 $GLOBALS['TL_DCA']['tl_company_archive'] = [
     'config'      => [
-        'dataContainer'     => 'Table',
+        'dataContainer'     => \Contao\DC_Table::class,
         'ctable'            => ['tl_company'],
         'switchToEdit'      => true,
         'enableVersioning'  => true,
         'onload_callback'   => [
             [\HeimrichHannot\CompanyBundle\DataContainer\CompanyArchiveContainer::class, 'checkPermission'],
-        ],
-        'onsubmit_callback' => [
-            ['huh.utils.dca', 'setDateAdded'],
-        ],
-        'oncopy_callback'   => [
-            ['huh.utils.dca', 'setDateAddedOnCopy'],
         ],
         'sql'               => [
             'keys' => [
@@ -82,13 +80,6 @@ $GLOBALS['TL_DCA']['tl_company_archive'] = [
         'tstamp'    => [
             'label' => &$GLOBALS['TL_LANG']['tl_company_archive']['tstamp'],
             'sql'   => "int(10) unsigned NOT NULL default '0'"
-        ],
-        'dateAdded' => [
-            'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag'    => 6,
-            'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
-            'sql'     => "int(10) unsigned NOT NULL default '0'"
         ],
         'title'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_company_archive']['title'],

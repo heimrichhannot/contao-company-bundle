@@ -12,6 +12,8 @@ use Contao\BackendUser;
 use Contao\Config;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Intl\Countries;
+use Contao\CoreBundle\Slug\Slug;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
@@ -22,7 +24,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CompanyContainer
 {
     public function __construct(
-        private readonly RequestStack $requestStack,
+        protected RequestStack $requestStack,
+        protected Slug $slug,
+        protected Countries $countries,
     )
     {
     }
@@ -34,6 +38,40 @@ class CompanyContainer
 
         $this->initPalette($model);
         $this->checkPermission($model);
+    }
+
+    #[AsCallback(table: 'tl_company', target: 'fields.alias.save')]
+    public function onSaveCallback($value, DataContainer $dc)
+    {
+        $aliasExists = static function (string $alias) use ($dc): bool {
+            $result = Database::getInstance()
+                ->prepare("SELECT id FROM tl_company WHERE alias=? AND id!=?")
+                ->execute($alias, $dc->id);
+
+            return $result->numRows > 0;
+        };
+
+        // Generate alias if there is none
+        if (!$value)
+        {
+            $value = $this->slug->generate($dc->activeRecord->title, 0, $aliasExists);
+        }
+        elseif (preg_match('/^[1-9]\d*$/', $value))
+        {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
+        }
+        elseif ($aliasExists($value))
+        {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
+        }
+
+        return $value;
+    }
+
+    #[AsCallback(table: 'tl_company', target: 'fields.country.options')]
+    public function optionsCallback(DataContainer $dc)
+    {
+        return $this->countries->getCountries();
     }
 
     public function initPalette(CompanyModel|null $company): void
