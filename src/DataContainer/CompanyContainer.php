@@ -27,12 +27,11 @@ class CompanyContainer
         protected RequestStack $requestStack,
         protected Slug $slug,
         protected Countries $countries,
-    )
-    {
+    ) {
     }
 
     #[AsCallback(table: 'tl_company', target: 'config.onload')]
-    public function onConfigOnloadCallback(DataContainer $dc = null): void
+    public function onConfigOnloadCallback(?DataContainer $dc = null): void
     {
         $model = CompanyModel::findByPk($dc->id);
 
@@ -45,23 +44,18 @@ class CompanyContainer
     {
         $aliasExists = static function (string $alias) use ($dc): bool {
             $result = Database::getInstance()
-                ->prepare("SELECT id FROM tl_company WHERE alias=? AND id!=?")
+                ->prepare('SELECT id FROM tl_company WHERE alias=? AND id!=?')
                 ->execute($alias, $dc->id);
 
             return $result->numRows > 0;
         };
 
         // Generate alias if there is none
-        if (!$value)
-        {
+        if (!$value) {
             $value = $this->slug->generate($dc->activeRecord->title, 0, $aliasExists);
-        }
-        elseif (preg_match('/^[1-9]\d*$/', (string) $value))
-        {
+        } elseif (preg_match('/^[1-9]\d*$/', (string) $value)) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
-        }
-        elseif ($aliasExists($value))
-        {
+        } elseif ($aliasExists($value)) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
         }
 
@@ -74,7 +68,7 @@ class CompanyContainer
         return $this->countries->getCountries();
     }
 
-    public function initPalette(CompanyModel|null $company): void
+    public function initPalette(?CompanyModel $company): void
     {
         if (!$company) {
             return;
@@ -100,7 +94,7 @@ class CompanyContainer
             Date::parse(Config::get('datimFormat'), trim((string) $arrRow['dateAdded'])) . ']</span></div>';
     }
 
-    public function checkPermission(DataContainer $dc, CompanyModel|null $company): void
+    public function checkPermission(DataContainer $dc, ?CompanyModel $company): void
     {
         $user = BackendUser::getInstance();
         $database = Database::getInstance();
@@ -135,7 +129,7 @@ class CompanyContainer
                 if (!in_array(Input::get('pid'), $root)) {
                     throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' company item ID ' . $id . ' to company archive ID ' . Input::get('pid') . '.');
                 }
-            // no break STATEMENT HERE
+                // no break STATEMENT HERE
 
             case 'edit':
             case 'show':

@@ -3,24 +3,23 @@
 namespace HeimrichHannot\CompanyBundle\DataContainer;
 
 use Contao\BackendUser;
-use Contao\Database;
-use Contao\System;
-use Contao\Input;
-use Contao\CoreBundle\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Contao\Controller;
+use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\Database;
 use Contao\Image;
+use Contao\Input;
 use Contao\StringUtil;
+use Contao\System;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CompanyArchiveContainer
 {
     public function __construct(
         private readonly AuthorizationCheckerInterface $auth,
-    )
-    {
+    ) {
     }
 
     public function checkPermission(): void
@@ -103,7 +102,7 @@ class CompanyArchiveContainer
                         $user->companys = $root;
                     }
                 }
-            // no break;
+                // no break;
 
             case 'copy':
             case 'delete':

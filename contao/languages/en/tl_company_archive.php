@@ -2,7 +2,7 @@
 
 $lang = &$GLOBALS['TL_LANG']['tl_company_archive'];
 
-/**
+/*
  * Fields
  */
 $lang['title'] = ['Title', 'Please enter a title.'];
@@ -11,13 +11,13 @@ $lang['start'] = ['Show from', 'Do not publish the Firmenarchiv on the website b
 $lang['stop'] = ['Show until', 'Unpublish the Firmenarchiv on the website after this date.'];
 $lang['tstamp'] = ['Revision date', ''];
 
-/**
+/*
  * Legends
  */
 $lang['general_legend'] = 'General settings';
 $lang['publish_legend'] = 'Publish settings';
 
-/**
+/*
  * Buttons
  */
 $lang['new'] = ['New Firmenarchiv', 'Firmenarchiv create'];
