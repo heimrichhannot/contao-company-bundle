@@ -5,7 +5,7 @@ use HeimrichHannot\CompanyBundle\Security\CompanyPermission;
 
 $dca = &$GLOBALS['TL_DCA']['tl_user'];
 
-/**
+/*
  * Palettes
  */
 PaletteManipulator::create()
@@ -22,18 +22,27 @@ foreach (array_keys($dca['palettes']) as $strPalette) {
     $dca['palettes'][$strPalette] = str_replace('email', 'email,userCompanies', (string) $dca['palettes'][$strPalette]);
 }
 
-/**
+/*
  * Fields
  */
 CompanyPermission::accessRightFields($dca);
 
 $dca['fields']['userCompanies'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_user']['userCompanies'],
-    'filter'     => true,
-    'exclude'    => true,
-    'inputType'  => 'select',
+    'label' => &$GLOBALS['TL_LANG']['tl_user']['userCompanies'],
+    'filter' => true,
+    'exclude' => true,
+    'inputType' => 'select',
     'foreignKey' => 'tl_company.title',
-    'relation'   => ['type' => 'belongsToMany', 'load' => 'eager'],
-    'eval'       => ['tl_class' => 'clr w100', 'chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'style' => 'width: 100%'],
-    'sql'        => "blob NULL"
+    'relation' => [
+        'type' => 'belongsToMany',
+        'load' => 'eager',
+    ],
+    'eval' => [
+        'tl_class' => 'clr w100',
+        'chosen' => true,
+        'includeBlankOption' => true,
+        'multiple' => true,
+        'style' => 'width: 100%',
+    ],
+    'sql' => 'blob NULL',
 ];
