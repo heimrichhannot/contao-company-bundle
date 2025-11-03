@@ -56,9 +56,9 @@ $lang['website'][1] = 'Geben Sie hier eine Webseite ein.';
 $lang['published'][0] = 'Veröffentlichen';
 $lang['published'][1] = 'Wählen Sie diese Option zum Veröffentlichen.';
 $lang['start'][0] = 'Anzeigen ab';
-$lang['start'][1] = 'Job erst ab diesem Tag auf der Webseite anzeigen.';
+$lang['start'][1] = 'Firma erst ab diesem Tag auf der Webseite anzeigen.';
 $lang['stop'][0] = 'Anzeigen bis';
-$lang['stop'][1] = 'Job nur bis zu diesem Tag auf der Webseite anzeigen.';
+$lang['stop'][1] = 'Firma nur bis zu diesem Tag auf der Webseite anzeigen.';
 
 /*
  * Legends
