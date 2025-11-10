@@ -50,9 +50,15 @@ class CompanyContainer
             return $result->numRows > 0;
         };
 
+        // Get min. PageId to get default SlugOptions
+        $minPageId = Database::getInstance()
+            ->prepare('SELECT min(id) n FROM tl_page WHERE published=1')
+            ->limit(1)
+            ->execute();
+
         // Generate alias if there is none
         if (!$value) {
-            $value = $this->slug->generate($dc->activeRecord->title, 0, $aliasExists);
+            $value = $this->slug->generate($dc->activeRecord->title, $minPageId->n ?? 1, $aliasExists);
         } elseif (preg_match('/^[1-9]\d*$/', (string) $value)) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $value));
         } elseif ($aliasExists($value)) {
